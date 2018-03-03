@@ -10,7 +10,7 @@ import org.junit.Test;
 import pt.sinfo.testDrive.exception.TestDriveException;
 
 
-public class VehicleContructorMethodTest {
+public class VehicleConstructorMethodTest {
 	
 	private String id;
 	private String model;
