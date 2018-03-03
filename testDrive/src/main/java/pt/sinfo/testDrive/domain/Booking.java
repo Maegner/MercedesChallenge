@@ -14,12 +14,16 @@ public class Booking {
 	private Date cancelledAt;
 	private String cancelledReason;
 	
+	public boolean verifyString(String s) {
+		return s == null || s.trim().equals("");
+	}
+	
 	public boolean verify(String id,String vehicleId,String firstName,String lastName
 			,Date pickupDate,Date createdAt,Date cancelledAt,String cancelledReason) {
-		return id==null||id.trim().equals("")||vehicleId==null||vehicleId.trim().equals("")
-				|| firstName==null||firstName.trim().equals("") || lastName==null||lastName.trim().equals("")
+		return verifyString(id)||verifyString(vehicleId)
+				|| verifyString(firstName)|| verifyString(lastName)
 				|| pickupDate==null || createdAt==null
-				|| (cancelledAt != null && (cancelledReason==null|| cancelledReason.trim().equals("")));
+				|| (cancelledAt != null && verifyString(cancelledReason));
 	}
 	
 	public Booking(String id,String vehicleId,String firstName,String lastName
