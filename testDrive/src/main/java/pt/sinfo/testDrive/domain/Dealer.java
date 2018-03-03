@@ -14,7 +14,7 @@ public class Dealer {
 	private Stream<Vehicle> vehicles;
 	private HashSet<String> closed;
 	
-	public boolean verifyString(String s) {
+	private boolean verifyString(String s) {
 		return s == null || s.trim().equals("");
 	}
 	

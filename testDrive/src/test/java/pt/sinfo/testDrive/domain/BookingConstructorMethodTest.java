@@ -1,7 +1,7 @@
 package pt.sinfo.testDrive.domain;
 
-import java.util.Date;
 
+import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,9 +12,9 @@ public class BookingConstructorMethodTest {
 	private String vehicleId;
 	private String firstName;
 	private String lastName;
-	private Date pickupDate;
-	private Date createdAt;
-	private Date cancelledAt;
+	private DateTime pickupDateTime;
+	private DateTime createdAt;
+	private DateTime cancelledAt;
 	private String cancelledReason;
 	
 	@Before
@@ -23,8 +23,8 @@ public class BookingConstructorMethodTest {
 		this.vehicleId = "3928f780-295b-4dd0-8cc9-28c0738398d9";
 		this.firstName = "Joanna";
 		this.lastName = "Randolph";
-		this.pickupDate = new Date();
-		this.createdAt = new Date();
+		this.pickupDateTime = new DateTime();
+		this.createdAt = new DateTime();
 		this.cancelledAt = null;
 		this.cancelledReason = null;
 	}
@@ -32,12 +32,12 @@ public class BookingConstructorMethodTest {
 	@Test
 	public void success() {
 		Booking testSubject = new Booking(this.id, this.vehicleId, this.firstName,
-				this.lastName, this.pickupDate, this.createdAt, this.cancelledAt, this.cancelledReason);
+				this.lastName, this.pickupDateTime, this.createdAt, this.cancelledAt, this.cancelledReason);
 		Assert.assertEquals(this.id, testSubject.getId());
 		Assert.assertEquals(this.vehicleId,testSubject.getVehicleId());
 		Assert.assertEquals(this.firstName, testSubject.getFirstName());
 		Assert.assertEquals(this.lastName,testSubject.getLastName());
-		Assert.assertEquals(this.pickupDate, testSubject.getPickupDate());
+		Assert.assertEquals(this.pickupDateTime, testSubject.getPickupDate());
 		Assert.assertEquals(this.createdAt, testSubject.getCreatedAt());
 		Assert.assertEquals(this.cancelledAt,testSubject.getCancelledAt());
 		Assert.assertEquals(this.cancelledReason, testSubject.getCancelledReason());

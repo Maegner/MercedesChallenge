@@ -23,6 +23,7 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 
 		<version.junit.junit>4.12</version.junit.junit>
+		<version.joda.time>2.9.7</version.joda.time>
 
 		<version.org.slf4j>1.7.12</version.org.slf4j>
 
@@ -140,6 +141,12 @@
         	<groupId>org.springframework.boot</groupId>
         	<artifactId>spring-boot-starter-web</artifactId>
     	</dependency>
+    	<!-- Time library -->
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>${version.joda.time}</version>
+		</dependency>
 	</dependencies>
 
 	<modules>
