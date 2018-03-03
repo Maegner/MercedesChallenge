@@ -3,6 +3,8 @@ package pt.sinfo.testDrive.domain;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.junit.Assert;
@@ -17,7 +19,7 @@ public class DealerConstructorMethodTest {
 	private String name;
 	private Integer latitude;
 	private Integer longitude;
-	private Stream<Vehicle> vehicles;
+	private ArrayList<Vehicle> vehicles;
 	private HashSet<String> closed;
 	
 	@Before
@@ -36,7 +38,7 @@ public class DealerConstructorMethodTest {
 		Vehicle vehicle = new Vehicle("id", "model", "fuel", "transmission", availability);
 		ArrayList<Vehicle> vehicleArray = new ArrayList<Vehicle>();
 		vehicleArray.add(vehicle);
-		this.vehicles = vehicleArray.stream();
+		this.vehicles = vehicleArray;
 		this.closed = new HashSet<String>();
 	}
 	
@@ -47,7 +49,7 @@ public class DealerConstructorMethodTest {
 		Assert.assertEquals(this.name, testSubject.getName());
 		Assert.assertEquals(this.latitude, testSubject.getLatitude());
 		Assert.assertEquals(this.longitude, testSubject.getLongitude());
-		Assert.assertEquals(this.vehicles, testSubject.getVehicles());
+		Assert.assertEquals(this.vehicles, testSubject.getVehicles().collect(Collectors.toList()));
 		Assert.assertEquals(this.closed, testSubject.getClosed());
 	}
 	

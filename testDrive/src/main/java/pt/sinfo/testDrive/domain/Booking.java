@@ -63,6 +63,9 @@ public class Booking {
 	public DateTime getPickupDate() {
 		return pickupDate;
 	}
+	public void setPickupDate(DateTime date) {
+		this.pickupDate = date;
+	}
 	public DateTime getCancelledAt() {
 		return cancelledAt;
 	}

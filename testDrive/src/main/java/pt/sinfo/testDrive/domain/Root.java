@@ -5,11 +5,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
 
 import pt.sinfo.testDrive.exception.TestDriveException;
 import pt.sinfo.testDrive.exception.VehicleNotFoundException;
+import pt.sinfo.testDrive.exception.VehicleUnavailableException;
 
 public class Root {
 	HashMap<String,Dealer> dealers;
@@ -32,14 +35,17 @@ public class Root {
 		
 		HashMap<DateTime,Booking> bookingsForVehicle = bookings.get(vehicleID);
 		if(bookingsForVehicle==null) {
-			throw new VehicleNotFoundException();
-		}else {
-			Booking booked = bookingsForVehicle.get(date);
-			if(booked==null) {
-				return true;
+			if(this.vehicleById(vehicleID).equals(new ArrayList<Vehicle>())) {
+				throw new VehicleNotFoundException();
 			}else {
-				return false;
+				bookingsForVehicle = new HashMap<DateTime,Booking>();
 			}
+		}
+		Booking booked = bookingsForVehicle.get(date);
+		if(booked==null) {
+			return true;
+		}else {
+			return false;
 		}
 	}
 	
@@ -81,6 +87,18 @@ public class Root {
 		}
 		return vehicles;
 	}
+	public List<Vehicle> vehicleById(String id){
+		if(verifyString(id)) {
+			throw new TestDriveException();
+		}
+		List<Vehicle> vehicles = new ArrayList<Vehicle>();
+		for(Dealer dealer : dealers.values()) {
+			List<Vehicle> found = dealer.getVehicles()
+			.filter( v -> v.getId().equals(id)).collect(Collectors.toList());
+			vehicles.addAll(found);
+		}
+		return vehicles;
+	}
 	
 	public List<Vehicle> vehicleByDealer(String dID){
 		if(verifyString(dID)) {
@@ -92,5 +110,55 @@ public class Root {
 			vehicles = dealer.getVehicles().collect(Collectors.toList());
 		}
 		return vehicles;
+	}
+	
+	public void bookVehicle(String dealerId,Booking book) {
+		if(dealerId==null || book == null) {
+			throw new TestDriveException();
+		}
+		if(!isAvailable(book.getVehicleId(), book.getPickupDate())) {
+			throw new VehicleUnavailableException();
+		}
+		Dealer dealer = this.dealers.get(dealerId);
+		if(dealer==null) {
+			throw new TestDriveException();
+		}
+		Vehicle vehicle = dealer.getVehicles()
+				.filter(v -> v.getId().equals(book.getVehicleId()))
+				.findFirst().orElse(null);
+		
+		if(vehicle==null) {
+			throw new TestDriveException();
+		}
+		if(!vehicle.checkAvailability(book.getPickupDate())) {
+			throw new VehicleUnavailableException();
+		}
+		HashMap<DateTime,Booking> currentBookings = this.bookings.get(book.getVehicleId());
+		if(currentBookings==null) {
+			currentBookings = new HashMap<DateTime,Booking>();
+		}
+		currentBookings.put(book.getPickupDate(), book);
+		this.bookings.put(book.getVehicleId(), currentBookings);
+	}
+	
+	public Dealer closestDealer(String model,String fuel,String transmission,ArrayList<Integer>position) {
+		Dealer result = null;
+		int lat = position.get(0);
+		int longi = position.get(1);
+		double minimalDistance = -1; 
+		for(Dealer dealer : dealers.values()) {
+			Vehicle vehicle = dealer.getVehicles()
+					.filter(v -> v.getModel().equals(model)
+							&& v.getFuel().equals(fuel)
+							&& v.getTransmission().equals(transmission))
+					.findFirst().orElse(null);
+			if(vehicle!=null) {
+				double distanceToDealer = dealer.getDistance(longi, lat);
+				if(minimalDistance==-1 || minimalDistance> distanceToDealer) {
+					result = dealer;
+				}
+			}
+		}
+		return result;
 	}
 }

@@ -1,5 +1,6 @@
 package pt.sinfo.testDrive.domain;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.stream.Stream;
 
@@ -11,20 +12,20 @@ public class Dealer {
 	private String name;
 	private Integer latitude;
 	private Integer longitude;
-	private Stream<Vehicle> vehicles;
+	private ArrayList<Vehicle> vehicles;
 	private HashSet<String> closed;
 	
 	private boolean verifyString(String s) {
 		return s == null || s.trim().equals("");
 	}
 	
-	public boolean invalidArguments(String id, String name,Integer latitude,Integer longitude,Stream<Vehicle> vehicles) {
+	public boolean invalidArguments(String id, String name,Integer latitude,Integer longitude,ArrayList<Vehicle> vehicles2) {
 		return verifyString(id) || verifyString(name) || latitude==null 
-				|| longitude==null || vehicles == null;
+				|| longitude==null || vehicles2 == null;
 		
 	}
 	
-	public Dealer(String id, String name,Integer latitude,Integer longitude,Stream<Vehicle> vehicles,HashSet<String> closed) {
+	public Dealer(String id, String name,Integer latitude,Integer longitude,ArrayList<Vehicle> vehicles,HashSet<String> closed) {
 		
 		if(invalidArguments(id, name, latitude, longitude, vehicles)) {
 			throw new TestDriveException();
@@ -51,7 +52,7 @@ public class Dealer {
 		return longitude;
 	}
 	public Stream<Vehicle> getVehicles() {
-		return vehicles;
+		return vehicles.stream();
 	}
 	public HashSet<String> getClosed() {
 		return closed;

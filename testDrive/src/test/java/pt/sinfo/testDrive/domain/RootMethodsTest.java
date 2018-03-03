@@ -14,6 +14,7 @@ import org.junit.Test;
 
 import pt.sinfo.testDrive.exception.TestDriveException;
 import pt.sinfo.testDrive.exception.VehicleNotFoundException;
+import pt.sinfo.testDrive.exception.VehicleUnavailableException;
 
 
 public class RootMethodsTest {
@@ -33,7 +34,7 @@ public class RootMethodsTest {
 		dayOne.add(1000);dayOne.add(1030);
 		dayTwo.add(1000);dayTwo.add(1030);
 		availability.put("thursday",dayOne);
-		availability.put("Monday", dayTwo);
+		availability.put("monday", dayTwo);
 		return new Vehicle(id,model,fuel,transmission,availability);
 	}
 	public Dealer dealerSetUp(ArrayList<Vehicle>dealerVehicles,String dId) {
@@ -41,16 +42,15 @@ public class RootMethodsTest {
 		String name = "name";
 		Integer latitude = 0;
 		Integer longitude = 0;
-		Stream<Vehicle> vehicles = dealerVehicles.stream();
 		HashSet<String> closed = new HashSet<String>();
-		return new Dealer(id, name, latitude, longitude, vehicles, closed);
+		return new Dealer(id, name, latitude, longitude, dealerVehicles, closed);
 	}
 	public Booking bookingSetUp(String vId,String bId) {
 		String id = bId;
 		String vehicleId = vId;
 		String firstName = "Joanna";
 		String lastName = "Randolph";
-		DateTime pickupDateTime = new DateTime();
+		DateTime pickupDateTime = new DateTime(2018,3,5,10,30);
 		DateTime createdAt = new DateTime();
 		DateTime cancelledAt = null;
 		String cancelledReason = null;
@@ -194,6 +194,11 @@ public class RootMethodsTest {
 	public void vehicleByEmptyFuel() {
 		root.vehicleByFuel("  ");
 	}
+	//SEARCH BY ID
+	@Test (expected = TestDriveException.class)
+	public void vehicleByNullId() {
+		root.vehicleById(null);
+	}
 	
 	//TESTING AVAILABILITY
 	@Test
@@ -226,5 +231,75 @@ public class RootMethodsTest {
 		DateTime date = new DateTime(1090,12,10,10,50);
 		this.root.isAvailable("AAA", date);
 	}
+	
+	//Testing Booking a TestDrive
+	@Test
+	public void successfullBooking() {
+		Booking book = this.bookingSetUp("C", "5");
+		this.root.bookVehicle("2",book);
+		boolean actual = this.root.isAvailable("C", book.getPickupDate());
+		Assert.assertEquals(false, actual);
+		
+		//Testing 2 Bookings on the same car at different times
+		DateTime date = new DateTime(2018,3,5,10,00);
+		book.setPickupDate(date);
+		this.root.bookVehicle("2",book);
+		actual = this.root.isAvailable("C", book.getPickupDate());
+		Assert.assertEquals(false, actual);
+	}
+	@Test(expected = VehicleUnavailableException.class)
+	public void ocupiedBooking() {
+		Booking book = this.bookingSetUp("A", "5");
+		this.root.bookVehicle("1",book);
+		this.root.isAvailable("A", book.getPickupDate());
+	}
+	@Test(expected = VehicleUnavailableException.class)
+	public void unauthorizedDayBooking() {
+		Booking book = this.bookingSetUp("A", "5");
+		DateTime date = new DateTime(2018,3,7,10,30);
+		book.setPickupDate(date);
+		this.root.bookVehicle("1",book);
+	}
+	@Test(expected = VehicleUnavailableException.class)
+	public void unauthorizedHourBooking() {
+		Booking book = this.bookingSetUp("A", "5");
+		DateTime date = new DateTime(2018,3,5,11,30);
+		book.setPickupDate(date);
+		this.root.bookVehicle("1",book);
+	}
+	@Test(expected = VehicleUnavailableException.class)
+	public void unauthorizedMinuteBooking() {
+		Booking book = this.bookingSetUp("A", "5");
+		DateTime date = new DateTime(2018,3,5,10,50);
+		book.setPickupDate(date);
+		this.root.bookVehicle("1",book);
+	}
+	@Test(expected = TestDriveException.class)
+	public void wrongDealer() {
+		Booking book = this.bookingSetUp("A", "5");
+		DateTime date = new DateTime(2018,3,8,10,00);
+		book.setPickupDate(date);
+		this.root.bookVehicle("2",book);
+	}
+	@Test(expected = TestDriveException.class)
+	public void unexistantDealer() {
+		Booking book = this.bookingSetUp("A", "5");
+		DateTime date = new DateTime(2018,3,8,10,00);
+		book.setPickupDate(date);
+		this.root.bookVehicle("90",book);
+	}
+	@Test(expected = TestDriveException.class)
+	public void nullDealer() {
+		Booking book = this.bookingSetUp("A", "5");
+		DateTime date = new DateTime(2018,3,8,10,00);
+		book.setPickupDate(date);
+		this.root.bookVehicle(null,book);
+	}
+	@Test(expected = TestDriveException.class)
+	public void nullBooking() {
+		Booking book = null;
+		this.root.bookVehicle("2",book);
+	}
+	
 	
 }
