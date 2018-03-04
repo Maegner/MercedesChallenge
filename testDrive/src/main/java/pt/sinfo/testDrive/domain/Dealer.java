@@ -10,8 +10,7 @@ public class Dealer {
 	
 	private String id;
 	private String name;
-	private Integer latitude;
-	private Integer longitude;
+	private Coordinate coordinate;
 	private ArrayList<Vehicle> vehicles;
 	private HashSet<String> closed;
 	
@@ -33,8 +32,7 @@ public class Dealer {
 		
 		this.id = id;
 		this.name = name;
-		this.latitude = latitude;
-		this.longitude = longitude;
+		this.coordinate = new Coordinate(longitude, latitude);
 		this.vehicles = vehicles;
 		this.closed = closed;
 	}
@@ -45,11 +43,12 @@ public class Dealer {
 	public String getName() {
 		return name;
 	}
-	public Integer getLatitude() {
-		return latitude;
+	public Coordinate getCoordinate() {
+		return coordinate;
 	}
-	public Integer getLongitude() {
-		return longitude;
+	public void setPosition(int latitude,int longitude) {
+		this.coordinate.setLatitude(latitude);
+		this.coordinate.setLongitude(longitude);
 	}
 	public Stream<Vehicle> getVehicles() {
 		return vehicles.stream();
@@ -59,8 +58,14 @@ public class Dealer {
 	}
 	
 	public double getDistance(int longi,int lat) {
-		return Math.sqrt(Math.pow((this.longitude-longi), 2) + Math.pow((this.latitude-lat), 2));
+		return Math.sqrt(Math.pow((this.coordinate.getLongitude()-longi), 2) + Math.pow((this.coordinate.getLatitude()-lat), 2));
 	}
 	
+	public boolean isInPoligon(Coordinate topRight, Coordinate bottomLeft) {
+		return ((bottomLeft.getLongitude()<=this.coordinate.getLongitude())
+				&&(this.coordinate.getLongitude()<=topRight.getLongitude())
+				&&(bottomLeft.getLatitude()<=this.coordinate.getLatitude())
+				&&(this.coordinate.getLatitude()<=topRight.getLatitude()));
+	}
 
 }

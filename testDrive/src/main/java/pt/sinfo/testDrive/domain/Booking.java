@@ -21,17 +21,16 @@ public class Booking {
 	}
 	
 	public boolean verify(String id,String vehicleId,String firstName,String lastName
-			,DateTime pickupDate2,DateTime createdAt2,DateTime cancelledAt2,String cancelledReason) {
+			,DateTime pickupDate2) {
 		return verifyString(id)||verifyString(vehicleId)
 				|| verifyString(firstName)|| verifyString(lastName)
-				|| pickupDate2==null || createdAt2==null
-				|| (cancelledAt2 != null && verifyString(cancelledReason));
+				|| pickupDate2==null;
 	}
 	
 	public Booking(String id,String vehicleId,String firstName,String lastName
-			,DateTime pickupDate,DateTime createdAt,DateTime cancelledAt,String cancelledReason){
+			,DateTime pickupDate){
 		
-		if(verify(id,vehicleId,firstName,lastName,pickupDate,createdAt,cancelledAt,cancelledReason)){
+		if(verify(id,vehicleId,firstName,lastName,pickupDate)){
 			throw new TestDriveException();
 		}
 		this.id = id;
@@ -39,9 +38,24 @@ public class Booking {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.pickupDate = pickupDate;
-		this.createdAt = createdAt;
-		this.cancelledAt = cancelledAt;
-		this.cancelledReason = cancelledReason;
+		this.createdAt = new DateTime();
+		this.cancelledAt = null;
+		this.cancelledReason = null;
+	}
+	public Booking(String vehicleId,String firstName,String lastName
+			,DateTime pickupDate){
+		
+		if(verify("id",vehicleId,firstName,lastName,pickupDate)){
+			throw new TestDriveException();
+		}
+		this.id = ""+this.hashCode();
+		this.vehicleId = vehicleId;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.pickupDate = pickupDate;
+		this.createdAt = new DateTime();
+		this.cancelledAt = null;
+		this.cancelledReason = null;
 	}
 	
 	
@@ -71,6 +85,10 @@ public class Booking {
 	}
 	public String getCancelledReason() {
 		return cancelledReason;
+	}
+	public void cancel(String reason) {
+		this.cancelledAt = new DateTime();
+		this.cancelledReason = reason;
 	}
 	
 	

@@ -22,6 +22,8 @@ public class RootMethodsTest {
 	private Root root;
 	private ArrayList<Vehicle> dealervehicles1;
 	private ArrayList<Vehicle> dealervehicles2;
+	private Dealer dealer1;
+	private Dealer dealer2;
 	
 	public Vehicle vehicleSetUp(String vId) {
 		String id = vId;
@@ -40,8 +42,8 @@ public class RootMethodsTest {
 	public Dealer dealerSetUp(ArrayList<Vehicle>dealerVehicles,String dId) {
 		String id = dId;
 		String name = "name";
-		Integer latitude = 0;
-		Integer longitude = 0;
+		Integer latitude = 101;
+		Integer longitude = 101;
 		HashSet<String> closed = new HashSet<String>();
 		return new Dealer(id, name, latitude, longitude, dealerVehicles, closed);
 	}
@@ -51,11 +53,8 @@ public class RootMethodsTest {
 		String firstName = "Joanna";
 		String lastName = "Randolph";
 		DateTime pickupDateTime = new DateTime(2018,3,5,10,30);
-		DateTime createdAt = new DateTime();
-		DateTime cancelledAt = null;
-		String cancelledReason = null;
 		return new Booking(id, vehicleId,firstName,
-				lastName,pickupDateTime,createdAt,cancelledAt,cancelledReason);
+				lastName,pickupDateTime);
 	}
 	
 	@Before
@@ -77,8 +76,8 @@ public class RootMethodsTest {
 		String dealerID1 = "1";
 		String dealerID2 = "2";
 		
-		Dealer dealer1 = dealerSetUp(dealervehicles1, dealerID1);
-		Dealer dealer2 = dealerSetUp(dealervehicles2, dealerID2);
+		this.dealer1 = dealerSetUp(dealervehicles1, dealerID1);
+		this.dealer2 = dealerSetUp(dealervehicles2, dealerID2);
 		
 		String bookingIdX = "X";
 		String bookingIdZ = "Z";
@@ -100,7 +99,9 @@ public class RootMethodsTest {
 		dealers.put(dealerID1, dealer1);
 		dealers.put(dealerID2,dealer2);
 		
-		this.root = new Root(dealers, bookings);
+		this.root = Root.getReference();
+		this.root.setBookings(bookings);
+		this.root.setDealers(dealers);
 		
 	}
 	
@@ -204,7 +205,7 @@ public class RootMethodsTest {
 	@Test
 	public void success() {
 		Vehicle v = this.dealervehicles1.get(0);
-		DateTime date = (DateTime) this.root.bookings.get(v.getId()).keySet().toArray()[0];
+		DateTime date = (DateTime) this.root.getReference().getBookings().get(v.getId()).keySet().toArray()[0];
 		Assert.assertEquals(false, this.root.isAvailable(v.getId(), date));
 		date = new DateTime(2090,12,10,10,50);
 		Assert.assertEquals(true, this.root.isAvailable(v.getId(), date));
@@ -212,7 +213,7 @@ public class RootMethodsTest {
 	}
 	@Test(expected = VehicleNotFoundException.class)
 	public void availabilityOfNonExistingVehicle() {
-		this.root.isAvailable("AAA", new DateTime());
+		this.root.isAvailable("AAA", new DateTime(2099,10,10,10,10));
 	}
 	@Test(expected = TestDriveException.class)
 	public void availabilityOfNullVehicle() {
@@ -239,7 +240,6 @@ public class RootMethodsTest {
 		this.root.bookVehicle("2",book);
 		boolean actual = this.root.isAvailable("C", book.getPickupDate());
 		Assert.assertEquals(false, actual);
-		
 		//Testing 2 Bookings on the same car at different times
 		DateTime date = new DateTime(2018,3,5,10,00);
 		book.setPickupDate(date);
@@ -301,7 +301,17 @@ public class RootMethodsTest {
 		this.root.bookVehicle("2",book);
 	}
 	
-	
+	//Test booking cancellation
+	@Test
+	public void verifyCancellation() {
+		Booking book = this.bookingSetUp("C", "5");
+		this.root.bookVehicle("2",book);
+		boolean actual = this.root.isAvailable("C",book.getPickupDate());
+		Assert.assertEquals(false, actual);
+		this.root.cancelBooking(book.getId(), "REASON");
+		actual = this.root.isAvailable("C",book.getPickupDate());
+		Assert.assertEquals(true, actual);
+	}
 	
 	//TESTING CLOSEST DEALER METHOD
 	@Test
@@ -309,18 +319,16 @@ public class RootMethodsTest {
 		String model = "AMG";
 		String fuel = "ELECTRIC";
 		String transmission = "AUTO";
-		ArrayList<Integer> position = new ArrayList<Integer>();
-		position.add(1);position.add(1);
+		Coordinate position = new Coordinate(1,1);
 		Dealer actual = root.closestDealer(model, fuel, transmission, position);
-		Assert.assertEquals(root.dealers.get("1"), actual);
+		Assert.assertEquals(root.getDealers().get("1"), actual);
 	}
 	@Test(expected = TestDriveException.class)
 	public void nullmodelFinder() {
 		String model = null;
 		String fuel = "ELECTRIC";
 		String transmission = "AUTO";
-		ArrayList<Integer> position = new ArrayList<Integer>();
-		position.add(1);position.add(1);
+		Coordinate position = new Coordinate(1,1);
 		root.closestDealer(model, fuel, transmission, position);
 	}
 	@Test(expected = TestDriveException.class)
@@ -328,8 +336,7 @@ public class RootMethodsTest {
 		String model = "AMG";
 		String fuel = null;
 		String transmission = "AUTO";
-		ArrayList<Integer> position = new ArrayList<Integer>();
-		position.add(1);position.add(1);
+		Coordinate position = new Coordinate(1,1);
 		root.closestDealer(model, fuel, transmission, position);
 	}
 	@Test(expected = TestDriveException.class)
@@ -337,8 +344,7 @@ public class RootMethodsTest {
 		String model = "AMG";
 		String fuel = "ELECTRIC";
 		String transmission = null;
-		ArrayList<Integer> position = new ArrayList<Integer>();
-		position.add(1);position.add(1);
+		Coordinate position = new Coordinate(1,1);
 		root.closestDealer(model, fuel, transmission, position);
 	}
 	@Test(expected = TestDriveException.class)
@@ -346,8 +352,43 @@ public class RootMethodsTest {
 		String model = "AMG";
 		String fuel = "ELECTRIC";
 		String transmission = "AUTO";
-		ArrayList<Integer> position = null;
+		Coordinate position = null;
 		root.closestDealer(model, fuel, transmission, position);
+	}
+	@Test
+	public void verifyDealerOrder() {
+		Dealer dealer3 = dealerSetUp(dealervehicles2, "3");
+		dealer3.setPosition(0, 0);
+		this.root.addNewDealer(dealer3);
+		this.dealer1.setPosition(100, 100);
+		String model = "AMG";
+		String fuel = "ELECTRIC";
+		String transmission = "AUTO";
+		Coordinate position = new Coordinate(1,1);
+		ArrayList<Dealer> actual = root.dealersWithSpecdVehicles(model, fuel, transmission, position);
+		ArrayList<Dealer> expected = new ArrayList<>();
+		expected.add(dealer3);
+		expected.add(this.dealer1);
+		expected.add(this.dealer2);
+		Assert.assertEquals(expected,actual);
+		
+	}
+	//TODO Write tests for when search parameters are empty
+	@Test
+	public void verifyDealerInPoligon() {
+		Dealer dealer3 = dealerSetUp(dealervehicles2, "3");
+		dealer3.setPosition(0, 0);
+		this.root.addNewDealer(dealer3);
+		this.dealer1.setPosition(100, 100);
+		String model = "AMG";
+		String fuel = "ELECTRIC";
+		String transmission = "AUTO";
+		Coordinate bottomLeft = new Coordinate(99, 99);
+		Coordinate topRight = new Coordinate(105,105);
+		ArrayList<Dealer> dList = root.dealersInPoligon(model, fuel, transmission,topRight, bottomLeft);
+		Assert.assertTrue(dList.contains(this.dealer1));
+		Assert.assertTrue(dList.contains(this.dealer2));
+		Assert.assertTrue(!dList.contains(dealer3));
 	}
 	
 	

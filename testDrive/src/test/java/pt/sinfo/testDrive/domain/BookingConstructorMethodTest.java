@@ -24,7 +24,6 @@ public class BookingConstructorMethodTest {
 		this.firstName = "Joanna";
 		this.lastName = "Randolph";
 		this.pickupDateTime = new DateTime();
-		this.createdAt = new DateTime();
 		this.cancelledAt = null;
 		this.cancelledReason = null;
 	}
@@ -32,14 +31,11 @@ public class BookingConstructorMethodTest {
 	@Test
 	public void success() {
 		Booking testSubject = new Booking(this.id, this.vehicleId, this.firstName,
-				this.lastName, this.pickupDateTime, this.createdAt, this.cancelledAt, this.cancelledReason);
+				this.lastName, this.pickupDateTime);
 		Assert.assertEquals(this.id, testSubject.getId());
 		Assert.assertEquals(this.vehicleId,testSubject.getVehicleId());
 		Assert.assertEquals(this.firstName, testSubject.getFirstName());
 		Assert.assertEquals(this.lastName,testSubject.getLastName());
 		Assert.assertEquals(this.pickupDateTime, testSubject.getPickupDate());
-		Assert.assertEquals(this.createdAt, testSubject.getCreatedAt());
-		Assert.assertEquals(this.cancelledAt,testSubject.getCancelledAt());
-		Assert.assertEquals(this.cancelledReason, testSubject.getCancelledReason());
 	}
 }

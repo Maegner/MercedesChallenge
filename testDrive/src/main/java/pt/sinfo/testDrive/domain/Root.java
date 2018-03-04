@@ -12,21 +12,48 @@ import java.util.stream.Stream;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 
+import pt.sinfo.testDrive.exception.BookingNotFoundException;
 import pt.sinfo.testDrive.exception.TestDriveException;
 import pt.sinfo.testDrive.exception.VehicleNotFoundException;
 import pt.sinfo.testDrive.exception.VehicleUnavailableException;
 
 public class Root {
-	HashMap<String,Dealer> dealers;
-	HashMap<String,HashMap<DateTime,Booking>> bookings; //Exterior hash, hashed by vehicleID, 
+	
+	private static Root singleton;
+	private HashMap<String,Dealer> dealers;
+	private HashMap<String,HashMap<DateTime,Booking>> bookings; //Exterior hash, hashed by vehicleID, 
 													//interior hash hashed by booking date
 	private boolean verifyString(String s) {
 		return s == null || s.trim().equals("");
 	}
 	
-	public Root(HashMap<String,Dealer> dealers,HashMap<String,HashMap<DateTime,Booking>> bookings) {
+	public void addNewDealer(Dealer d) {
+		this.dealers.put(d.getId(), d);
+	}
+	
+	public static Root getReference() {
+		if(singleton == null) {
+			singleton = new Root();
+		}
+		return singleton;
+	}
+	
+	private Root() {
+		this.dealers = null;
+		this.bookings = null;
+	}
+	
+	public void setDealers(HashMap<String,Dealer> dealers) {
 		this.dealers = dealers;
+	}
+	public void setBookings(HashMap<String,HashMap<DateTime,Booking>> bookings) {
 		this.bookings = bookings;
+	}
+	public HashMap<String,HashMap<DateTime,Booking>> getBookings(){
+		return this.bookings;
+	}
+	public HashMap<String,Dealer> getDealers(){
+		return this.dealers;
 	}
 
 	public boolean isAvailable(String vehicleID,DateTime date) {
@@ -44,7 +71,7 @@ public class Root {
 			}
 		}
 		Booking booked = bookingsForVehicle.get(date);
-		if(booked==null) {
+		if(booked==null||(booked!=null&&booked.getCancelledAt()!=null)) {
 			return true;
 		}else {
 			return false;
@@ -143,24 +170,45 @@ public class Root {
 		this.bookings.put(book.getVehicleId(), currentBookings);
 	}
 	
+
+	public void cancelBooking(String bookingId,String cancelReason) {
+		if(verifyString(bookingId)||verifyString(cancelReason)) {
+			throw new TestDriveException();
+		}
+		Booking bookingToCancel = null;
+		outerSearch:
+		for(HashMap<DateTime,Booking> booked : this.bookings.values()) {
+			for(Booking b : booked.values()) {
+				if(b.getId()==bookingId) {
+					bookingToCancel = b;
+					b.cancel(cancelReason);
+					break outerSearch;
+				}
+			}
+		}
+		if(bookingToCancel==null) {
+			throw new BookingNotFoundException();
+		}
+	}
+	
 	public Vehicle findVehicleWithSpecs(Dealer dealer,String model,String fuel,String transmission) {
-		if(verifyString(model)|| verifyString(transmission)||verifyString(fuel)) {
+		if(model==null|| transmission==null||fuel==null) {
 			throw new TestDriveException();
 		}
 		return dealer.getVehicles()
-				.filter(v -> v.getModel().equals(model)
-						&& v.getFuel().equals(fuel)
-						&& v.getTransmission().equals(transmission))
+				.filter(v -> (v.getModel().equals(model)||model.equals(""))
+						&& (v.getFuel().equals(fuel)||fuel.equals(""))
+						&& (v.getTransmission().equals(transmission)||transmission.equals("")))
 				.findFirst().orElse(null);
 	}
 	
-	public Dealer closestDealer(String model,String fuel,String transmission,ArrayList<Integer>position) {
+	public Dealer closestDealer(String model,String fuel,String transmission,Coordinate position) {
 		if(position==null) {
 			throw new TestDriveException();
 		}
 		Dealer result = null;
-		int lat = position.get(0);
-		int longi = position.get(1);
+		int lat = position.getLatitude();
+		int longi = position.getLongitude();
 		double minimalDistance = -1;
 		for(Dealer dealer : dealers.values()) {
 			Vehicle vehicle = findVehicleWithSpecs(dealer, model, fuel, transmission);
@@ -175,12 +223,12 @@ public class Root {
 		return result;
 	}
 	
-	public TreeSet<Dealer> createDealerTreeSet(ArrayList<Integer>position) {
+	public TreeSet<Dealer> createDealerTreeSet(Coordinate position) {
 		return new TreeSet<Dealer>(new Comparator<Dealer>() {
 			@Override
 			public int compare(Dealer arg0, Dealer arg1) {
-				int lat=position.get(0);
-				int longi = position.get(1);
+				int lat=position.getLatitude();
+				int longi = position.getLongitude();
 				double distance0 = arg0.getDistance(longi, lat);
 				double distance1 = arg1.getDistance(longi, lat);
 				if (distance0==distance1) {return 0;}
@@ -191,7 +239,7 @@ public class Root {
 		
 	}
 	
-	public ArrayList<Dealer> dealersWithSpecdVehicles(String model,String fuel,String transmission,ArrayList<Integer>position) { 
+	public ArrayList<Dealer> dealersWithSpecdVehicles(String model,String fuel,String transmission,Coordinate position) { 
 		TreeSet<Dealer> dealers = createDealerTreeSet(position);
 		for(Dealer dealer: this.dealers.values()) {
 			Vehicle vehicle = findVehicleWithSpecs(dealer, model, fuel, transmission);
@@ -199,6 +247,18 @@ public class Root {
 				dealers.add(dealer);
 			}
 		}		
-		return new ArrayList<Dealer>(dealers);//TODO Verify if order is kept
+		return new ArrayList<Dealer>(dealers);
 	}
+	
+	public ArrayList<Dealer> dealersInPoligon(String model,String fuel,String transmission,Coordinate topRight,Coordinate bottomLeft){
+		ArrayList<Dealer> result = new ArrayList<Dealer>();
+		for(Dealer dealer: this.dealers.values()) {
+			Vehicle vehicle = findVehicleWithSpecs(dealer, model, fuel, transmission);
+			if (vehicle!=null && dealer.isInPoligon(topRight, bottomLeft) ) {
+				result.add(dealer);
+			}
+		}
+		return result;
+	}
+	
 }
