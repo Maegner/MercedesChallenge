@@ -302,4 +302,53 @@ public class RootMethodsTest {
 	}
 	
 	
+	
+	//TESTING CLOSEST DEALER METHOD
+	@Test
+	public void found() {
+		String model = "AMG";
+		String fuel = "ELECTRIC";
+		String transmission = "AUTO";
+		ArrayList<Integer> position = new ArrayList<Integer>();
+		position.add(1);position.add(1);
+		Dealer actual = root.closestDealer(model, fuel, transmission, position);
+		Assert.assertEquals(root.dealers.get("1"), actual);
+	}
+	@Test(expected = TestDriveException.class)
+	public void nullmodelFinder() {
+		String model = null;
+		String fuel = "ELECTRIC";
+		String transmission = "AUTO";
+		ArrayList<Integer> position = new ArrayList<Integer>();
+		position.add(1);position.add(1);
+		root.closestDealer(model, fuel, transmission, position);
+	}
+	@Test(expected = TestDriveException.class)
+	public void nullfuelFinder() {
+		String model = "AMG";
+		String fuel = null;
+		String transmission = "AUTO";
+		ArrayList<Integer> position = new ArrayList<Integer>();
+		position.add(1);position.add(1);
+		root.closestDealer(model, fuel, transmission, position);
+	}
+	@Test(expected = TestDriveException.class)
+	public void nullTransmissionFinder() {
+		String model = "AMG";
+		String fuel = "ELECTRIC";
+		String transmission = null;
+		ArrayList<Integer> position = new ArrayList<Integer>();
+		position.add(1);position.add(1);
+		root.closestDealer(model, fuel, transmission, position);
+	}
+	@Test(expected = TestDriveException.class)
+	public void nullPositionFinder() {
+		String model = "AMG";
+		String fuel = "ELECTRIC";
+		String transmission = "AUTO";
+		ArrayList<Integer> position = null;
+		root.closestDealer(model, fuel, transmission, position);
+	}
+	
+	
 }

@@ -1,9 +1,11 @@
 package pt.sinfo.testDrive.domain;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -141,24 +143,62 @@ public class Root {
 		this.bookings.put(book.getVehicleId(), currentBookings);
 	}
 	
+	public Vehicle findVehicleWithSpecs(Dealer dealer,String model,String fuel,String transmission) {
+		if(verifyString(model)|| verifyString(transmission)||verifyString(fuel)) {
+			throw new TestDriveException();
+		}
+		return dealer.getVehicles()
+				.filter(v -> v.getModel().equals(model)
+						&& v.getFuel().equals(fuel)
+						&& v.getTransmission().equals(transmission))
+				.findFirst().orElse(null);
+	}
+	
 	public Dealer closestDealer(String model,String fuel,String transmission,ArrayList<Integer>position) {
+		if(position==null) {
+			throw new TestDriveException();
+		}
 		Dealer result = null;
 		int lat = position.get(0);
 		int longi = position.get(1);
-		double minimalDistance = -1; 
+		double minimalDistance = -1;
 		for(Dealer dealer : dealers.values()) {
-			Vehicle vehicle = dealer.getVehicles()
-					.filter(v -> v.getModel().equals(model)
-							&& v.getFuel().equals(fuel)
-							&& v.getTransmission().equals(transmission))
-					.findFirst().orElse(null);
+			Vehicle vehicle = findVehicleWithSpecs(dealer, model, fuel, transmission);
 			if(vehicle!=null) {
 				double distanceToDealer = dealer.getDistance(longi, lat);
 				if(minimalDistance==-1 || minimalDistance> distanceToDealer) {
+					minimalDistance = distanceToDealer;
 					result = dealer;
 				}
 			}
 		}
 		return result;
+	}
+	
+	public TreeSet<Dealer> createDealerTreeSet(ArrayList<Integer>position) {
+		return new TreeSet<Dealer>(new Comparator<Dealer>() {
+			@Override
+			public int compare(Dealer arg0, Dealer arg1) {
+				int lat=position.get(0);
+				int longi = position.get(1);
+				double distance0 = arg0.getDistance(longi, lat);
+				double distance1 = arg1.getDistance(longi, lat);
+				if (distance0==distance1) {return 0;}
+				else if(distance0>distance1) {return 1;}
+				else {return -1;}
+			}
+		});
+		
+	}
+	
+	public ArrayList<Dealer> dealersWithSpecdVehicles(String model,String fuel,String transmission,ArrayList<Integer>position) { 
+		TreeSet<Dealer> dealers = createDealerTreeSet(position);
+		for(Dealer dealer: this.dealers.values()) {
+			Vehicle vehicle = findVehicleWithSpecs(dealer, model, fuel, transmission);
+			if (vehicle!=null) {
+				dealers.add(dealer);
+			}
+		}		
+		return new ArrayList<Dealer>(dealers);//TODO Verify if order is kept
 	}
 }
