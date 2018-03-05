@@ -42,6 +42,21 @@ public class Booking {
 		this.cancelledAt = null;
 		this.cancelledReason = null;
 	}
+	public Booking(String id,String vehicleId,String firstName,String lastName
+			,DateTime pickupDate,DateTime createdAt){
+		
+		if(verify(id,vehicleId,firstName,lastName,pickupDate)){
+			throw new TestDriveException();
+		}
+		this.id = id;
+		this.vehicleId = vehicleId;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.pickupDate = pickupDate;
+		this.createdAt = createdAt;
+		this.cancelledAt = null;
+		this.cancelledReason = null;
+	}
 	public Booking(String vehicleId,String firstName,String lastName
 			,DateTime pickupDate){
 		
@@ -88,6 +103,10 @@ public class Booking {
 	}
 	public void cancel(String reason) {
 		this.cancelledAt = new DateTime();
+		this.cancelledReason = reason;
+	}
+	public void cancel(String reason,DateTime cancelledAt) {
+		this.cancelledAt = cancelledAt;
 		this.cancelledReason = reason;
 	}
 	

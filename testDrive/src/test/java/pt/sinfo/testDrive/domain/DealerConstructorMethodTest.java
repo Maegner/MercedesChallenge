@@ -17,8 +17,8 @@ public class DealerConstructorMethodTest {
 	
 	private String id;
 	private String name;
-	private Integer latitude;
-	private Integer longitude;
+	private float latitude;
+	private float longitude;
 	private ArrayList<Vehicle> vehicles;
 	private HashSet<String> closed;
 	
@@ -47,8 +47,6 @@ public class DealerConstructorMethodTest {
 		Dealer testSubject = new Dealer(id, name, latitude, longitude, vehicles, closed);
 		Assert.assertEquals(this.id, testSubject.getId());
 		Assert.assertEquals(this.name, testSubject.getName());
-		Assert.assertEquals(this.latitude, testSubject.getCoordinate().getLatitude());
-		Assert.assertEquals(this.longitude, testSubject.getCoordinate().getLongitude());
 		Assert.assertEquals(this.vehicles, testSubject.getVehicles().collect(Collectors.toList()));
 		Assert.assertEquals(this.closed, testSubject.getClosed());
 	}
@@ -61,14 +59,6 @@ public class DealerConstructorMethodTest {
 	@Test(expected = TestDriveException.class)
 	public void nullName() {
 		new Dealer(id, null, latitude, longitude, vehicles, closed);
-	}
-	@Test(expected = TestDriveException.class)
-	public void nullLat() {
-		new Dealer(id, name, null, longitude, vehicles, closed);
-	}
-	@Test(expected = TestDriveException.class)
-	public void nullLong() {
-		new Dealer(id, name, latitude, null, vehicles, closed);
 	}
 	@Test(expected = TestDriveException.class)
 	public void nullVehicles() {

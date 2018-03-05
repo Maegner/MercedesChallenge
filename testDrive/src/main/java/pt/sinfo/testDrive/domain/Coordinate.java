@@ -1,18 +1,22 @@
 package pt.sinfo.testDrive.domain;
 
 public class Coordinate {
-	private int latitude;
-	private int longitude;
+	private float latitude;
+	private float longitude;
 	
-	public Coordinate(int longitude, int latitude) {
+	public Coordinate() {
+		
+	}
+	
+	public Coordinate(float longitude, float latitude) {
 		this.longitude = longitude;
 		this.latitude = latitude;
 	}
 	
-	public Integer getLatitude() {
+	public float getLatitude() {
 		return this.latitude;
 	}
-	public Integer getLongitude() {
+	public float getLongitude() {
 		return this.longitude;
 	}
 	public void setLongitude(int longi) {

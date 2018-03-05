@@ -20,15 +20,31 @@ import pt.sinfo.testDrive.exception.VehicleUnavailableException;
 public class Root {
 	
 	private static Root singleton;
-	private HashMap<String,Dealer> dealers;
-	private HashMap<String,HashMap<DateTime,Booking>> bookings; //Exterior hash, hashed by vehicleID, 
+	private HashMap<String,Dealer> dealers;  //DealerId -> Dealer
+	private HashMap<String,ArrayList<Booking>> bookings; //Exterior hash, hashed by vehicleID, 
 													//interior hash hashed by booking date
+	private Root() {
+		this.dealers = new HashMap<String,Dealer>();
+		this.bookings = new HashMap<String,ArrayList<Booking>>();
+	}
+	
 	private boolean verifyString(String s) {
 		return s == null || s.trim().equals("");
 	}
 	
 	public void addNewDealer(Dealer d) {
 		this.dealers.put(d.getId(), d);
+	}
+	
+	public void addNewBooking(Booking b) {
+		if(this.bookings.containsKey(b.getVehicleId())) {
+			this.bookings.get(b.getVehicleId()).add(b);
+		}
+		else {
+			ArrayList<Booking> dateBooking = new ArrayList<Booking>();
+			dateBooking.add(b);
+			this.bookings.put(b.getVehicleId(), dateBooking);
+		}
 	}
 	
 	public static Root getReference() {
@@ -38,18 +54,13 @@ public class Root {
 		return singleton;
 	}
 	
-	private Root() {
-		this.dealers = null;
-		this.bookings = null;
-	}
-	
 	public void setDealers(HashMap<String,Dealer> dealers) {
 		this.dealers = dealers;
 	}
-	public void setBookings(HashMap<String,HashMap<DateTime,Booking>> bookings) {
+	public void setBookings(HashMap<String,ArrayList<Booking>> bookings) {
 		this.bookings = bookings;
 	}
-	public HashMap<String,HashMap<DateTime,Booking>> getBookings(){
+	public HashMap<String,ArrayList<Booking>> getBookings(){
 		return this.bookings;
 	}
 	public HashMap<String,Dealer> getDealers(){
@@ -62,15 +73,22 @@ public class Root {
 			throw new TestDriveException();
 		}
 		
-		HashMap<DateTime,Booking> bookingsForVehicle = bookings.get(vehicleID);
+		ArrayList<Booking> bookingsForVehicle = bookings.get(vehicleID);
 		if(bookingsForVehicle==null) {
 			if(this.vehicleById(vehicleID).equals(new ArrayList<Vehicle>())) {
 				throw new VehicleNotFoundException();
 			}else {
-				bookingsForVehicle = new HashMap<DateTime,Booking>();
+				bookingsForVehicle = new ArrayList<Booking>();
 			}
 		}
-		Booking booked = bookingsForVehicle.get(date);
+		Booking booked = null;
+		for(Booking b : bookingsForVehicle) {
+			if(b.getPickupDate().equals(date)) {
+				booked = b;
+				break;
+			}
+		}
+		
 		if(booked==null||(booked!=null&&booked.getCancelledAt()!=null)) {
 			return true;
 		}else {
@@ -162,11 +180,11 @@ public class Root {
 		if(!vehicle.checkAvailability(book.getPickupDate())) {
 			throw new VehicleUnavailableException();
 		}
-		HashMap<DateTime,Booking> currentBookings = this.bookings.get(book.getVehicleId());
+		ArrayList<Booking> currentBookings = this.bookings.get(book.getVehicleId());
 		if(currentBookings==null) {
-			currentBookings = new HashMap<DateTime,Booking>();
+			currentBookings = new ArrayList<Booking>();
 		}
-		currentBookings.put(book.getPickupDate(), book);
+		currentBookings.add(book);
 		this.bookings.put(book.getVehicleId(), currentBookings);
 	}
 	
@@ -177,9 +195,9 @@ public class Root {
 		}
 		Booking bookingToCancel = null;
 		outerSearch:
-		for(HashMap<DateTime,Booking> booked : this.bookings.values()) {
-			for(Booking b : booked.values()) {
-				if(b.getId()==bookingId) {
+		for(ArrayList<Booking> booked : this.bookings.values()) {
+			for(Booking b : booked) {
+				if(b.getId().equals(bookingId)) {
 					bookingToCancel = b;
 					b.cancel(cancelReason);
 					break outerSearch;
@@ -207,8 +225,8 @@ public class Root {
 			throw new TestDriveException();
 		}
 		Dealer result = null;
-		int lat = position.getLatitude();
-		int longi = position.getLongitude();
+		float lat = position.getLatitude();
+		float longi = position.getLongitude();
 		double minimalDistance = -1;
 		for(Dealer dealer : dealers.values()) {
 			Vehicle vehicle = findVehicleWithSpecs(dealer, model, fuel, transmission);
@@ -227,8 +245,8 @@ public class Root {
 		return new TreeSet<Dealer>(new Comparator<Dealer>() {
 			@Override
 			public int compare(Dealer arg0, Dealer arg1) {
-				int lat=position.getLatitude();
-				int longi = position.getLongitude();
+				float lat=position.getLatitude();
+				float longi = position.getLongitude();
 				double distance0 = arg0.getDistance(longi, lat);
 				double distance1 = arg1.getDistance(longi, lat);
 				if (distance0==distance1) {return 0;}

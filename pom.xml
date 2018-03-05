@@ -60,8 +60,9 @@
 						<dataFile>${basedir}/target/coverage-reports/jacoco.exec</dataFile>
 						<excludes>
 							<exclude>
-								HelloWorld.java
+								Main.java
 							</exclude>
+							<exclude>**/web/**</exclude>
 						</excludes>
 					</configuration>
 					<executions>
@@ -146,6 +147,11 @@
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
 			<version>${version.joda.time}</version>
+		</dependency>
+		<dependency>
+    		<groupId>com.googlecode.json-simple</groupId>
+    		<artifactId>json-simple</artifactId>
+    		<version>1.1.1</version>
 		</dependency>
 	</dependencies>
 

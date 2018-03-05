@@ -52,7 +52,7 @@ public class RootMethodsTest {
 		String vehicleId = vId;
 		String firstName = "Joanna";
 		String lastName = "Randolph";
-		DateTime pickupDateTime = new DateTime(2018,3,5,10,30);
+		DateTime pickupDateTime = new DateTime(2022,9,2,10,30);
 		return new Booking(id, vehicleId,firstName,
 				lastName,pickupDateTime);
 	}
@@ -85,13 +85,13 @@ public class RootMethodsTest {
 		Booking booking1 = bookingSetUp(vehicleA, bookingIdX);
 		Booking booking2 = bookingSetUp(vehicleB, bookingIdZ);
 		
-		HashMap<DateTime,Booking> vehicleABookings = new HashMap<DateTime,Booking>();
-		vehicleABookings.put(booking1.getPickupDate(),booking1);
+		ArrayList<Booking> vehicleABookings = new ArrayList<Booking>();
+		vehicleABookings.add(booking1);
 		
-		HashMap<DateTime,Booking> vehicleBBookings = new HashMap<DateTime,Booking>();
-		vehicleBBookings.put(booking2.getPickupDate(),booking2);
+		ArrayList<Booking> vehicleBBookings = new ArrayList<Booking>();
+		vehicleBBookings.add(booking2);
 		
-		HashMap<String,HashMap<DateTime,Booking>> bookings = new HashMap<String,HashMap<DateTime,Booking>>();
+		HashMap<String,ArrayList<Booking>> bookings = new HashMap<String,ArrayList<Booking>>();
 		bookings.put(vehicleA,vehicleABookings);
 		bookings.put(vehicleB,vehicleBBookings);
 		
@@ -205,9 +205,7 @@ public class RootMethodsTest {
 	@Test
 	public void success() {
 		Vehicle v = this.dealervehicles1.get(0);
-		DateTime date = (DateTime) this.root.getReference().getBookings().get(v.getId()).keySet().toArray()[0];
-		Assert.assertEquals(false, this.root.isAvailable(v.getId(), date));
-		date = new DateTime(2090,12,10,10,50);
+		DateTime date = new DateTime(2090,12,10,10,50);
 		Assert.assertEquals(true, this.root.isAvailable(v.getId(), date));
 		
 	}
@@ -237,15 +235,12 @@ public class RootMethodsTest {
 	@Test
 	public void successfullBooking() {
 		Booking book = this.bookingSetUp("C", "5");
+		DateTime date = new DateTime(2022,9,12,10,30);
+		book.setPickupDate(date);
 		this.root.bookVehicle("2",book);
 		boolean actual = this.root.isAvailable("C", book.getPickupDate());
 		Assert.assertEquals(false, actual);
-		//Testing 2 Bookings on the same car at different times
-		DateTime date = new DateTime(2018,3,5,10,00);
-		book.setPickupDate(date);
-		this.root.bookVehicle("2",book);
-		actual = this.root.isAvailable("C", book.getPickupDate());
-		Assert.assertEquals(false, actual);
+
 	}
 	@Test(expected = VehicleUnavailableException.class)
 	public void ocupiedBooking() {
@@ -256,21 +251,21 @@ public class RootMethodsTest {
 	@Test(expected = VehicleUnavailableException.class)
 	public void unauthorizedDayBooking() {
 		Booking book = this.bookingSetUp("A", "5");
-		DateTime date = new DateTime(2018,3,7,10,30);
+		DateTime date = new DateTime(2022,9,23,10,30);
 		book.setPickupDate(date);
 		this.root.bookVehicle("1",book);
 	}
 	@Test(expected = VehicleUnavailableException.class)
 	public void unauthorizedHourBooking() {
 		Booking book = this.bookingSetUp("A", "5");
-		DateTime date = new DateTime(2018,3,5,11,30);
+		DateTime date = new DateTime(2022,9,12,12,30);
 		book.setPickupDate(date);
 		this.root.bookVehicle("1",book);
 	}
 	@Test(expected = VehicleUnavailableException.class)
 	public void unauthorizedMinuteBooking() {
 		Booking book = this.bookingSetUp("A", "5");
-		DateTime date = new DateTime(2018,3,5,10,50);
+		DateTime date = new DateTime(2022,9,12,10,50);
 		book.setPickupDate(date);
 		this.root.bookVehicle("1",book);
 	}
@@ -305,6 +300,8 @@ public class RootMethodsTest {
 	@Test
 	public void verifyCancellation() {
 		Booking book = this.bookingSetUp("C", "5");
+		DateTime date = new DateTime(2022,9,12,10,30);
+		book.setPickupDate(date);
 		this.root.bookVehicle("2",book);
 		boolean actual = this.root.isAvailable("C",book.getPickupDate());
 		Assert.assertEquals(false, actual);

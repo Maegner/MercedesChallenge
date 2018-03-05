@@ -18,13 +18,12 @@ public class Dealer {
 		return s == null || s.trim().equals("");
 	}
 	
-	public boolean invalidArguments(String id, String name,Integer latitude,Integer longitude,ArrayList<Vehicle> vehicles2) {
-		return verifyString(id) || verifyString(name) || latitude==null 
-				|| longitude==null || vehicles2 == null;
+	public boolean invalidArguments(String id, String name,float latitude,float longitude,ArrayList<Vehicle> vehicles2) {
+		return verifyString(id) || verifyString(name) || vehicles2 == null;
 		
 	}
 	
-	public Dealer(String id, String name,Integer latitude,Integer longitude,ArrayList<Vehicle> vehicles,HashSet<String> closed) {
+	public Dealer(String id, String name,float latitude,float longitude,ArrayList<Vehicle> vehicles,HashSet<String> closed) {
 		
 		if(invalidArguments(id, name, latitude, longitude, vehicles)) {
 			throw new TestDriveException();
@@ -57,7 +56,7 @@ public class Dealer {
 		return closed;
 	}
 	
-	public double getDistance(int longi,int lat) {
+	public double getDistance(float longi,float lat) {
 		return Math.sqrt(Math.pow((this.coordinate.getLongitude()-longi), 2) + Math.pow((this.coordinate.getLatitude()-lat), 2));
 	}
 	

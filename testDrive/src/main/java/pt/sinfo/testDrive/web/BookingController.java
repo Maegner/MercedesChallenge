@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.ISODateTimeFormat;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,11 +22,11 @@ import pt.sinfo.testDrive.exception.TestDriveException;
 @EnableAutoConfiguration
 public class BookingController {
 	
-	@RequestMapping(value="bookings/new" ,method = RequestMethod.POST)
+	@RequestMapping(value="/bookings/new" ,method = RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
-	public void bookTestDrive(@RequestParam(required=true) String dealerId,
-			@RequestBody(required=true) Map<String,String> bookingInfo) {
+	public Booking bookTestDrive(@RequestBody(required=true) Map<String,String> bookingInfo) {
 		
+		String dealerId = bookingInfo.get("dealerId");
 		String vehicleId = bookingInfo.get("vehicleId");
 		String firstName = bookingInfo.get("firstName");
 		String lastName = bookingInfo.get("lastName");
@@ -33,16 +34,17 @@ public class BookingController {
 		DateTime pickupDate = null;
 		
 		try {
-			String pattern = "yyyy-mm-ddThh:mm:ss.SSS";
-			pickupDate = DateTime.parse(date,DateTimeFormat.forPattern(pattern));
+			pickupDate = DateTime.parse(date,ISODateTimeFormat.dateTimeParser());
 		}catch(Exception e) {
 			throw new TestDriveException();
 		}
 		
 		Booking booking = new Booking(vehicleId, firstName, lastName, pickupDate);
 		Root.getReference().bookVehicle(dealerId, booking);
+		
+		return booking; 
 	}
-	@RequestMapping(value="bookings/cancel" ,method = RequestMethod.PUT)
+	@RequestMapping(value="/bookings/cancel" ,method = RequestMethod.PUT)
 	@ResponseStatus(HttpStatus.OK)
 	public void cancelBooking(@RequestParam(required=true) String bookingId,
 			@RequestBody(required=true) String reason) {

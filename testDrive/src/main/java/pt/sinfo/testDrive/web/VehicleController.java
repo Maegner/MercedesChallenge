@@ -15,22 +15,22 @@ import pt.sinfo.testDrive.domain.Vehicle;
 @EnableAutoConfiguration
 public class VehicleController {
 	
-	@RequestMapping(value="vehicles/" ,method = RequestMethod.GET)
+	@RequestMapping(value="/vehicles/models" ,method = RequestMethod.GET)
 	public List<Vehicle> vehiclesByModel(@RequestParam(required=true) String model){
 		Root root = Root.getReference();
 		return root.vehicleByModel(model);
 	}
-	@RequestMapping(value="vehicles/" ,method = RequestMethod.GET)
+	@RequestMapping(value="/vehicles/fuels" ,method = RequestMethod.GET)
 	public List<Vehicle> vehiclesByFuel(@RequestParam(required=true) String fuel){
 		Root root = Root.getReference();
 		return root.vehicleByFuel(fuel);
 	}
-	@RequestMapping(value="vehicles/" ,method = RequestMethod.GET)
+	@RequestMapping(value="/vehicles/transmissions" ,method = RequestMethod.GET)
 	public List<Vehicle> vehiclesByTransmission(@RequestParam(required=true) String transmission){
 		Root root = Root.getReference();
 		return root.vehicleByTransmission(transmission);
 	}
-	@RequestMapping(value="vehicles/" ,method = RequestMethod.GET)
+	@RequestMapping(value="/vehicles/dealers" ,method = RequestMethod.GET)
 	public List<Vehicle> vehiclesByDealer(@RequestParam(required=true) String dealer){
 		Root root = Root.getReference();
 		return root.vehicleByDealer(dealer);
