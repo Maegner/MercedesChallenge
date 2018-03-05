@@ -1,16 +1,20 @@
 package pt.sinfo.testDrive.domain;
 
-import java.util.Date;
+
 
 import org.joda.time.DateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import pt.sinfo.testDrive.exception.TestDriveException;
 
+@JsonIgnoreProperties({ "createdAt","cancelledAt","cancelledReason","pickupDate" })
 public class Booking {
 	private String id;
 	private String vehicleId;
 	private String firstName;
 	private String lastName;
+	
 	private DateTime pickupDate;
 	private DateTime createdAt;
 	private DateTime cancelledAt;
@@ -82,9 +86,6 @@ public class Booking {
 	}
 	public String getLastName() {
 		return lastName;
-	}
-	public DateTime getCreatedAt() {
-		return createdAt;
 	}
 	public String getFirstName() {
 		return firstName;

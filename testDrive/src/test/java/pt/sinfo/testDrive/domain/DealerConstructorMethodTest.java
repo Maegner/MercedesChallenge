@@ -47,7 +47,7 @@ public class DealerConstructorMethodTest {
 		Dealer testSubject = new Dealer(id, name, latitude, longitude, vehicles, closed);
 		Assert.assertEquals(this.id, testSubject.getId());
 		Assert.assertEquals(this.name, testSubject.getName());
-		Assert.assertEquals(this.vehicles, testSubject.getVehicles().collect(Collectors.toList()));
+		Assert.assertEquals(this.vehicles, testSubject.getVehicles());
 		Assert.assertEquals(this.closed, testSubject.getClosed());
 	}
 	

@@ -4,13 +4,19 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.stream.Stream;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+
 import pt.sinfo.testDrive.exception.TestDriveException;
 
 public class Dealer {
 	
 	private String id;
 	private String name;
+	@JsonUnwrapped
 	private Coordinate coordinate;
+	//@JsonIgnore
 	private ArrayList<Vehicle> vehicles;
 	private HashSet<String> closed;
 	
@@ -49,8 +55,8 @@ public class Dealer {
 		this.coordinate.setLatitude(latitude);
 		this.coordinate.setLongitude(longitude);
 	}
-	public Stream<Vehicle> getVehicles() {
-		return vehicles.stream();
+	public ArrayList<Vehicle> getVehicles(){
+		return vehicles;
 	}
 	public HashSet<String> getClosed() {
 		return closed;

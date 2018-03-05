@@ -102,7 +102,7 @@ public class Root {
 		}
 		List<Vehicle> vehicles = new ArrayList<Vehicle>();
 		for(Dealer dealer : dealers.values()) {
-			List<Vehicle> found = dealer.getVehicles()
+			List<Vehicle> found = dealer.getVehicles().stream()
 			.filter( v -> v.getModel().equals(model)).collect(Collectors.toList());
 			vehicles.addAll(found);
 		}
@@ -115,7 +115,7 @@ public class Root {
 		}
 		List<Vehicle> vehicles = new ArrayList<Vehicle>();
 		for(Dealer dealer : dealers.values()) {
-			List<Vehicle> found = dealer.getVehicles()
+			List<Vehicle> found = dealer.getVehicles().stream()
 			.filter( v -> v.getFuel().equals(fuel)).collect(Collectors.toList());
 			vehicles.addAll(found);
 		}
@@ -128,7 +128,7 @@ public class Root {
 		}
 		List<Vehicle> vehicles = new ArrayList<Vehicle>();
 		for(Dealer dealer : dealers.values()) {
-			List<Vehicle> found = dealer.getVehicles()
+			List<Vehicle> found = dealer.getVehicles().stream()
 			.filter( v -> v.getTransmission().equals(transmission)).collect(Collectors.toList());
 			vehicles.addAll(found);
 		}
@@ -140,7 +140,7 @@ public class Root {
 		}
 		List<Vehicle> vehicles = new ArrayList<Vehicle>();
 		for(Dealer dealer : dealers.values()) {
-			List<Vehicle> found = dealer.getVehicles()
+			List<Vehicle> found = dealer.getVehicles().stream()
 			.filter( v -> v.getId().equals(id)).collect(Collectors.toList());
 			vehicles.addAll(found);
 		}
@@ -154,7 +154,7 @@ public class Root {
 		List<Vehicle> vehicles = new ArrayList<Vehicle>();
 		Dealer dealer = dealers.get(dID);
 		if(dealer!=null) {
-			vehicles = dealer.getVehicles().collect(Collectors.toList());
+			vehicles = dealer.getVehicles();
 		}
 		return vehicles;
 	}
@@ -170,7 +170,7 @@ public class Root {
 		if(dealer==null) {
 			throw new TestDriveException();
 		}
-		Vehicle vehicle = dealer.getVehicles()
+		Vehicle vehicle = dealer.getVehicles().stream()
 				.filter(v -> v.getId().equals(book.getVehicleId()))
 				.findFirst().orElse(null);
 		
@@ -213,7 +213,7 @@ public class Root {
 		if(model==null|| transmission==null||fuel==null) {
 			throw new TestDriveException();
 		}
-		return dealer.getVehicles()
+		return dealer.getVehicles().stream()
 				.filter(v -> (v.getModel().equals(model)||model.equals(""))
 						&& (v.getFuel().equals(fuel)||fuel.equals(""))
 						&& (v.getTransmission().equals(transmission)||transmission.equals("")))
