@@ -44,6 +44,7 @@ public class DealerController {
 			@RequestBody(required=true) Map<String,Coordinate> boundaries){
 		
 		Root root = Root.getReference();
+		
 		Coordinate leftBoundary = boundaries.get("bottomLeft");
 		Coordinate rightBoundary = boundaries.get("topRight");
 		
