@@ -2,7 +2,7 @@
 
 This aplication is my answer to the Sinfo test drive challenge API.
 
-## Before you get started
+## Before getting started
 Make sure you have the latest maven and Java versions installed.
 Disclaimer: 
     This project was only tested in a linux based system (Ubuntu 16.4) so the commands to run or build the program can differ from OS to OS, altough if you have the corect versions of java and maven installed the app should build and run independently on the Operative System.
@@ -47,10 +47,10 @@ The web folder that contains the API controlers is not targeted by the unit test
 #### Searching for Vehicles with a certaint atribute
 URI  | QueryString/Atribute |Request type
 ----- | -----------|---------
-    localhost:8080/vehicles/models  |model| GET
-    localhost:8080/vehicles/fuels  |fuel |GET
-    localhost:8080/vehicles/transmissions |transmission |GET
-    localhost:8080/vehicles/dealers |dealer |GET
+localhost:8080/vehicles/models  |model| GET
+localhost:8080/vehicles/fuels  |fuel |GET
+localhost:8080/vehicles/transmissions |transmission |GET
+localhost:8080/vehicles/dealers |dealer |GET
 #### Searching for dealers based on positioning and owned Vehicles
 * All the query strings in this method are optinal, if not provided the query string value will be considered to be "any", therefore matching with all vehicles.
 
