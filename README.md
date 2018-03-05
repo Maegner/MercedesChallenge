@@ -44,7 +44,10 @@ Then go to the folder testDrive/target/site/jacoco and open the file index.html.
 The web folder that contains the API controlers is not targeted by the unit tests because all they do is call methods that were already tested.
 
 ## API Documentation
-[read the documentatio](Doc.md)
+[read the documentation](Doc.md)
+
+## Project Explaination
+[read the explaination](Explain.md)
 
 ## Author
 - Francisco Aguiar (franciscomaguiar@gmail.com)
