@@ -44,16 +44,7 @@ Then go to the folder testDrive/target/site/jacoco and open the file index.html.
 The web folder that contains the API controlers is not targeted by the unit tests because all they do is call methods that were already tested.
 
 ## API Documentation
-#### Searching for Vehicles with a certaint atribute
-URI  | QueryString/Atribute |Request type
------ | -----------|---------
-localhost:8080/vehicles/models  |model| GET
-localhost:8080/vehicles/fuels  |fuel |GET
-localhost:8080/vehicles/transmissions |transmission |GET
-localhost:8080/vehicles/dealers |dealer |GET
-#### Searching for dealers based on positioning and owned Vehicles
-* All the query strings in this method are optinal, if not provided the query string value will be considered to be "any", therefore matching with all vehicles.
-
+[read the documentatio](Doc.md)
 
 ## Author
 - Francisco Aguiar (franciscomaguiar@gmail.com)
