@@ -99,7 +99,7 @@ public class Root {
 	public List<Vehicle> searchVehicle(String model,String fuel,String transmission, String dealerId ){
 		List<Vehicle> vehicles = new ArrayList<Vehicle>();
 		for(Dealer dealer : dealers.values()) {
-			if(dealer.getId()!= dealerId && dealerId!="") {
+			if(!dealer.getId().equals(dealerId) && !dealerId.equals("")) {
 				continue;
 			}
 			List<Vehicle> found = dealer.getVehicles().stream()

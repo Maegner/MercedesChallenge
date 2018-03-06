@@ -1,12 +1,26 @@
 # API Documentation
 ## Vehicles
 ### Searching for Vehicles with a certaint atribute
-URI  | QueryString/Atribute |Request type
------ | -----------|---------
-localhost:8080/vehicles/models  |model| GET
-localhost:8080/vehicles/fuels  |fuel |GET
-localhost:8080/vehicles/transmissions |transmission |GET
-localhost:8080/vehicles/dealers |dealer |GET
+__Request type :__ POST <br />
+__Return values:__ List of Vehicles matching de description <br />
+__URI :__ localhost:8080/vehicles <br />
+__Required Headers :__ Content-type: application/json <br />
+__Required Body :__ A json object containing the optional atributes present in the example bellow <br />
+__Body example :__
+```json
+{
+  "dealerId":"846679bd-5831-4286-969b-056e9c89d74c",
+  "fuel":"GASOLINE",
+  "transmission":"MANUAL",
+  "model":"AMG"
+}
+```
+__Or simply__
+```json
+{
+  #This querie will return all of the existing vehicles
+}
+```
 
 ## Dealers
 All the query strings in this controller are optinal, if not provided the query string value will be considered to be "any", therefore matching with all vehicles.
