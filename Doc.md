@@ -81,7 +81,7 @@ __Obs :__
 * The date format has to be the following "yyyy-mm-ddThh:mm:ss.SSS" the SSS field is optional. 
 * The vehicle must bellong to the dealer referenced by the dealer id.
 ### Cancel a test drive.
-__Request type :__ POST <br />
+__Request type :__ PUT <br />
 __Return values:__ NONE <br />
 __URI :__ localhost:8080/bookings/cancel <br />
 __Required query string :__ bookingId <br />
