@@ -96,6 +96,21 @@ public class Root {
 		}
 	}
 	
+	public List<Vehicle> searchVehicle(String model,String fuel,String transmission, String dealerId ){
+		List<Vehicle> vehicles = new ArrayList<Vehicle>();
+		for(Dealer dealer : dealers.values()) {
+			if(dealer.getId()!= dealerId && dealerId!="") {
+				continue;
+			}
+			List<Vehicle> found = dealer.getVehicles().stream()
+			.filter( v -> (v.getModel().equals(model)||model.equals(""))
+					&& (v.getFuel().equals(fuel)||fuel.equals(""))
+					&& (v.getTransmission().equals(transmission)||transmission.equals(""))).collect(Collectors.toList());
+			vehicles.addAll(found);
+		}
+		return vehicles;
+	}
+	
 	public List<Vehicle> vehicleByModel(String model){
 		if(verifyString(model)) {
 			throw new TestDriveException();

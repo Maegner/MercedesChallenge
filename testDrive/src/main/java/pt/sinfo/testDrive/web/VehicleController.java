@@ -15,25 +15,12 @@ import pt.sinfo.testDrive.domain.Vehicle;
 @EnableAutoConfiguration
 public class VehicleController {
 	
-	@RequestMapping(value="/vehicles/models" ,method = RequestMethod.GET)
-	public List<Vehicle> vehiclesByModel(@RequestParam(required=true) String model){
+	@RequestMapping(value="/vehicles/" ,method = RequestMethod.GET)
+	public List<Vehicle>search(@RequestParam(defaultValue="") String fuel,
+			@RequestParam(defaultValue="") String model,
+			@RequestParam(defaultValue="") String transmission,
+			@RequestParam(defaultValue="")String dealerId){
 		Root root = Root.getReference();
-		return root.vehicleByModel(model);
+		return root.searchVehicle(model, fuel, transmission, dealerId);
 	}
-	@RequestMapping(value="/vehicles/fuels" ,method = RequestMethod.GET)
-	public List<Vehicle> vehiclesByFuel(@RequestParam(required=true) String fuel){
-		Root root = Root.getReference();
-		return root.vehicleByFuel(fuel);
-	}
-	@RequestMapping(value="/vehicles/transmissions" ,method = RequestMethod.GET)
-	public List<Vehicle> vehiclesByTransmission(@RequestParam(required=true) String transmission){
-		Root root = Root.getReference();
-		return root.vehicleByTransmission(transmission);
-	}
-	@RequestMapping(value="/vehicles/dealers" ,method = RequestMethod.GET)
-	public List<Vehicle> vehiclesByDealer(@RequestParam(required=true) String dealer){
-		Root root = Root.getReference();
-		return root.vehicleByDealer(dealer);
-	}
-	
 }

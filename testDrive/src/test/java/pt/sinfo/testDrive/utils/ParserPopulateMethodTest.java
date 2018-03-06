@@ -38,5 +38,11 @@ public class ParserPopulateMethodTest {
 		Root root = Root.getReference();
 		Assert.assertTrue(root.getDealers().containsKey("846679bd-5831-4286-969b-056e9c89d74c"));
 	}
+	
+	@Test
+	public void verifyVehicles() {
+		Root root = Root.getReference();
+		Assert.assertTrue(root.searchVehicle("E", "", "", "").size()==4);
+	}
 
 }
