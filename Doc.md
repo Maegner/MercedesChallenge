@@ -1,6 +1,6 @@
 # API Documentation
 ## Vehicles
-#### Searching for Vehicles with a certaint atribute
+### Searching for Vehicles with a certaint atribute
 URI  | QueryString/Atribute |Request type
 ----- | -----------|---------
 localhost:8080/vehicles/models  |model| GET
@@ -10,7 +10,7 @@ localhost:8080/vehicles/dealers |dealer |GET
 
 ## Dealers
 All the query strings in this controller are optinal, if not provided the query string value will be considered to be "any", therefore matching with all vehicles.
-#### Get the closest dealer to the provided location that has a vehicle with specific atributes.
+### Get the closest dealer to the provided location that has a vehicle with specific atributes.
 __Request type :__ POST <br />
 __Return values:__ 0 or 1 Dealer Object <br />
 __URI :__ localhost:8080/dealers/get-closest <br />
@@ -24,7 +24,7 @@ __Body example :__
    "longitude":0
 }
 ```
-#### Get the dealers sorted by distance according to the provided location that have a vehicle with specific attributes.
+### Get the dealers sorted by distance according to the provided location that have a vehicle with specific attributes.
 __Request type :__ POST <br />
 __Return values:__ Array containg 0 or more Dealer Objects <br />
 __URI :__ localhost:8080/dealers/search <br />
@@ -39,7 +39,7 @@ __Body example :__
 }
 ```
 
-#### Get the dealers inside a given polygon that have a vehicle with specific attributes.
+### Get the dealers inside a given polygon that have a vehicle with specific attributes.
 __Request type :__ POST <br />
 __Return values:__ Array containg 0 or more Dealer Objects <br />
 __URI :__ localhost:8080/dealers/search <br />
