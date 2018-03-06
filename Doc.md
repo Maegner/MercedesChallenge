@@ -9,16 +9,16 @@ __Required Body :__ A json object containing the optional atributes present in t
 __Body example :__
 ```json
 {
-  "dealerId":"846679bd-5831-4286-969b-056e9c89d74c",
-  "fuel":"GASOLINE",
-  "transmission":"MANUAL",
-  "model":"AMG"
+"dealerId":"846679bd-5831-4286-969b-056e9c89d74c",
+"fuel":"GASOLINE",
+"transmission":"MANUAL",
+"model":"AMG"
 }
 ```
 __Or simply__
 ```json
 {
-  #This querie will return all of the existing vehicles
+#This query will return all of the existing vehicles
 }
 ```
 
@@ -34,8 +34,8 @@ __Required Body :__ Coordinate Object <br />
 __Body example :__
 ```json
 {
-   "latitude":42.333,
-   "longitude":0
+"latitude":42.333,
+"longitude":0
 }
 ```
 ### Get the dealers sorted by distance according to the provided location that have a vehicle with specific attributes.
@@ -48,8 +48,8 @@ __Required Body :__ Coordinate Object <br />
 __Body example :__
 ```json
 {
-   "latitude":42.333,
-   "longitude":0
+"latitude":42.333,
+"longitude":0
 }
 ```
 
@@ -63,14 +63,14 @@ __Required Body :__ Two Coordinate Objects representing the poligon's bottom lef
 __Body example :__
 ```json
 {
-    "bottomLeft":{
-        "latitude":38.888,
-        "longitude":-10.55
-    },
-    "topRight":{
-        "latitude":42.4,
-        "longitude":0
-    }
+"bottomLeft":{
+"latitude":38.888,
+"longitude":-10.55
+},
+"topRight":{
+"latitude":42.4,
+"longitude":0
+}
 }
 ```
 
@@ -84,15 +84,15 @@ __Required Body :__ A json object containing __all__ the atributes present in th
 __Body example :__
 ```json
 {
-   "dealerId":"846679bd-5831-4286-969b-056e9c89d74c",
-   "vehicleId":768a73af-4336-41c8-b1bd-76bd700378ce",
-   "firstName":"Francisco",
-   "lastName":"Aguiar",
-   "pickupDate":"2018-03-03T10:30:00"
+"dealerId":"846679bd-5831-4286-969b-056e9c89d74c",
+"vehicleId":768a73af-4336-41c8-b1bd-76bd700378ce",
+"firstName":"Francisco",
+"lastName":"Aguiar",
+"pickupDate":"2018-03-03T10:30:00"
 }
 ```
-__Obs :__ 
-* The date format has to be the following "yyyy-mm-ddThh:mm:ss.SSS" the SSS field is optional. 
+__Obs :__
+* The date format has to be the following "yyyy-mm-ddThh:mm:ss.SSS" the SSS field is optional.
 * The vehicle must bellong to the dealer referenced by the dealer id.
 ### Cancel a test drive.
 __Request type :__ PUT <br />
@@ -104,6 +104,6 @@ __Required Body :__ String containing the cancelation reason <br />
 __Body example :__
 ```json
 {
-   "reason": "reason for cancelation"
+"reason": "reason for cancelation"
 }
 ```
