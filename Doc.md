@@ -11,12 +11,12 @@ localhost:8080/vehicles/dealers |dealer |GET
 ## Dealers
 All the query strings in this controller are optinal, if not provided the query string value will be considered to be "any", therefore matching with all vehicles.
 #### Get the closest dealer to the provided location that has a vehicle with specific atributes.
-__Request type :__ POST
-__Return values:__ 0 or 1 Dealer Object
-__URI :__ localhost:8080/dealers/get-closest
-__Optional query strings :__ model,fuel,transmission
-__Required Headers :__ Content-type: application/json
-__Required Body :__ Coordinate Object
+__Request type :__ POST <br />
+__Return values:__ 0 or 1 Dealer Object <br />
+__URI :__ localhost:8080/dealers/get-closest <br />
+__Optional query strings :__ model,fuel,transmission <br />
+__Required Headers :__ Content-type: application/json <br />
+__Required Body :__ Coordinate Object <br />
 __Body example :__
 ```json
 {
@@ -25,12 +25,12 @@ __Body example :__
 }
 ```
 #### Get the dealers sorted by distance according to the provided location that have a vehicle with specific attributes.
-__Request type :__ POST
-__Return values:__ Array containg 0 or more Dealer Objects
-__URI :__ localhost:8080/dealers/search
-__Optional query strings :__ model,fuel,transmission
-__Required Headers :__ Content-type: application/json
-__Required Body :__ Coordinate Object
+__Request type :__ POST <br />
+__Return values:__ Array containg 0 or more Dealer Objects <br />
+__URI :__ localhost:8080/dealers/search <br />
+__Optional query strings :__ model,fuel,transmission <br />
+__Required Headers :__ Content-type: application/json <br />
+__Required Body :__ Coordinate Object <br />
 __Body example :__
 ```json
 {
@@ -40,12 +40,12 @@ __Body example :__
 ```
 
 #### Get the dealers inside a given polygon that have a vehicle with specific attributes.
-__Request type :__ POST
-__Return values:__ Array containg 0 or more Dealer Objects
-__URI :__ localhost:8080/dealers/search
-__Optional query strings :__ model,fuel,transmission
-__Required Headers :__ Content-type: application/json
-__Required Body :__ Two Coordinate Objects representing the poligon's bottom left corner and top right corner
+__Request type :__ POST <br />
+__Return values:__ Array containg 0 or more Dealer Objects <br />
+__URI :__ localhost:8080/dealers/search <br />
+__Optional query strings :__ model,fuel,transmission <br />
+__Required Headers :__ Content-type: application/json <br />
+__Required Body :__ Two Coordinate Objects representing the poligon's bottom left corner and top right corner <br />
 __Body example :__
 ```json
 {
